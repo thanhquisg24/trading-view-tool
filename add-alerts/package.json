@@ -1,12 +1,5 @@
 {
-  "name": "@alleyway/add-tradingview-alerts-tool",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:alleyway/add-tradingview-alerts-tool.git"
-  },
-  "bugs": {
-    "url": "https://github.com/alleyway/add-tradingview-alerts-tool/issues"
-  },
+  "name": "add-tradingview-alerts-tool",
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,16 +12,21 @@
     "tsconfig.json",
     "!**/*.test.**"
   ],
+  "moduleDirectories": [
+    "node_modules",
+    "src"
+  ],
   "scripts": {
     "build": "npx tsc",
     "atat": "node --experimental-specifier-resolution=node --no-warnings ./dist/cli.js",
     "prepublishOnly": "npm run build",
     "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first!' && npx release-it",
     "release-beta": "npx release-it --preRelease=beta",
-    "prepare": "husky install",
     "test": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --ci --watchAll=false --forceExit",
     "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --watchAll=false --forceExit",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:fetchcoin": "jest --findRelatedTests src/fetch-symbols.test.ts",
+    "test:tvaction": "jest --findRelatedTests src/test/tv-page-actions.test.ts"
   },
   "keywords": [
     "tradingview",
@@ -36,10 +34,11 @@
     "3commas",
     "indicator"
   ],
-  "author": "Michael Lake",
+  "author": "Qui",
   "license": "MIT",
   "version": "2.3.2-beta.1",
   "dependencies": {
+    "@jest/globals": "^29.3.1",
     "axios": "^0.27.2",
     "commander": "^9.4.0",
     "consola": "^2.15.3",
@@ -50,17 +49,17 @@
     "prompts": "^2.4.2",
     "puppeteer": "^15.5.0",
     "regex-parser": "^2.2.11",
-    "yaml": "^1.10.0"
+    "yaml": "2.1.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.9",
     "@babel/preset-typescript": "^7.18.6",
     "@release-it/bumper": "^4.0.0",
-    "@types/jest": "^28.1.6",
+    "@types/jest": "^28.1.8",
     "@types/node": "^16.11.41",
-    "husky": "^8.0.1",
     "jest": "^28.1.3",
     "jest-junit": "^14.0.0",
+    "nodemon": "^2.0.15",
     "release-it": "^15.2.0",
     "ts-jest": "^28.0.7",
     "typescript": "^4.7.4"
