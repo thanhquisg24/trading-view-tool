@@ -48,6 +48,8 @@
     "pacote": "^13.6.1",
     "prompts": "^2.4.2",
     "puppeteer": "^15.5.0",
+    "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-recaptcha": "^3.6.6",
     "regex-parser": "^2.2.11",
     "yaml": "2.1.3"
   },

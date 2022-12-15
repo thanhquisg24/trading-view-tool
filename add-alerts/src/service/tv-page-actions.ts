@@ -10,10 +10,20 @@ import {
 } from "../classes";
 import RegexParser from "regex-parser";
 import { accessSync, constants, writeFileSync } from "fs";
-import puppeteer, { Browser } from "puppeteer";
+import { Browser } from "puppeteer";
+import puppeteer from "puppeteer-extra";
+import RecaptchaPlugin from "puppeteer-extra-plugin-recaptcha";
 import path from "path";
 import { mkdir } from "fs/promises";
 
+puppeteer.use(
+  RecaptchaPlugin({
+    provider: {
+      id: "2captcha",
+      token: process.env.RECAPTCHA_TOKEN,
+    },
+  })
+);
 // data-dialog-name="gopro"
 
 const screenshot = isEnvEnabled(process.env.SCREENSHOT);

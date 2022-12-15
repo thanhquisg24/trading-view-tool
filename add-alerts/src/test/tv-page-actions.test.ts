@@ -54,6 +54,7 @@ describe("tv-page-actions tests", () => {
     if (accessDenied) {
       log.info("Access denied, logging in...");
       if (username && password) {
+        await page.solveRecaptchas();
         await login(page, username, password);
       }
     }
@@ -70,7 +71,7 @@ describe("tv-page-actions tests", () => {
       "🚀 ~ file: tv-page-actions.test.ts:63 ~ afterAll ~ browser",
       browser
     );
-    await browser.close();
+    // await browser.close();
   });
 
   // test.skip("dummy tv-page-actions test", async () => {
