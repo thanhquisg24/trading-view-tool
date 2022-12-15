@@ -1,0 +1,16 @@
+node_modules/
+.idea/
+user_data/
+.env
+config.yml
+*_pairs.csv
+*_symbols.csv
+/config.*.yml
+/blacklist.csv
+output/
+tradingview-alerts-home
+create-tradingview-alerts-home/dist
+coverage
+junit.xml
+protected_docs
+.DS_Store
