@@ -1,0 +1,44 @@
+files:
+  input: coinbase_eth_symbols.csv
+  exclude: blacklist.csv
+tradingview:
+  # The chart which has the indicator you'd like to use
+  chartUrl: https://www.tradingview.com/chart/XXXXXXXX/
+  # (optional) set the chart interval before adding pairs, otherwise interval of last saved chart is used
+  # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M      # NOTE: '1h,4h' to add alerts across multiple intervals
+  interval: 4h
+  # Optionally supply login details or login manually once and restart script
+  #username: JimmyJohnson
+  #password: SuperSecret
+alert:
+  condition: # tertiary/quaternary rows might not exist for your indicator. If not remove those values
+    primaryLeft: RSI
+    primaryRight:
+    secondary: Moving Up
+    tertiaryLeft: 3.4
+    tertiaryRight: 14
+    quaternaryLeft:
+    quaternaryRight:
+  option: Once Per Bar Close
+  actions:
+    notifyOnApp: false
+    showPopup: false
+    sendEmail: false
+    webhook:
+      enabled: true
+      url: "https://3commas.io/trade_signal/trading_view"
+    playSound:
+      enabled: true
+      name: "Thin"
+      duration: "Once"
+  # alert name is optional - can override in csv if you add a "name" column. can use {{symbol|base|quote}}
+  # name: "MI dev3 for {{base}} {{quote}}"
+  # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
+  message: >
+    {
+         "message_type": "bot",
+         "bot_id": 999999,
+         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
+         "delay_seconds": 0,
+         "pair": "{{quote_asset}}_{{instrument}}"
+    }

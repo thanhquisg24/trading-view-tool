@@ -26,7 +26,8 @@
     "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --watchAll=false --forceExit",
     "test:watch": "jest --watch",
     "test:fetchcoin": "jest --findRelatedTests src/fetch-symbols.test.ts",
-    "test:tvaction": "jest --findRelatedTests src/test/tv-page-actions.test.ts"
+    "test:tvaction": "jest --findRelatedTests src/test/tv-page-actions.test.ts",
+    "test:tvaddalert": "jest --findRelatedTests src/test/add-alerts-2.test.ts"
   },
   "keywords": [
     "tradingview",
