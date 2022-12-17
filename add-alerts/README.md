@@ -1,5 +1,3 @@
-
-
 # Add TradingView Alerts Tool 🤖
 
 ### Automatically add custom alerts to TradingView in bulk
@@ -9,28 +7,25 @@
 [![code coverage](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/coverage.svg?min_medium=70)](https://mlake900.gitlab.io/add-tradingview-alerts-tool/)
 [![Npm package monthly downloads](https://badgen.net/npm/dm/@alleyway/add-tradingview-alerts-tool)](https://npmjs.com/package/@alleyway/add-tradingview-alerts-tool)
 
+⚠️ _WARNING: Running command line software on your computer is risky! Although this software has no known malicious code in it - it does rely on **3rd-party libraries which can be vulnerable to hacking**. As of late 2021, 3rd-party hacks have been on the rise - use at your own risk._
 
-
-⚠️ *WARNING: Running command line software on your computer is risky! Although this software has no known malicious code in it - it does rely on __3rd-party libraries which can be vulnerable to hacking__. As of late 2021, 3rd-party hacks have been on the rise - use at your own risk.*
-
-👋 *NOTE: We have a service that automates this tool on secured, virtual servers. Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
+👋 _NOTE: We have a service that automates this tool on secured, virtual servers. Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)_
 
 [![Alertz Manager Banner](./alertzmanager_banner.svg)](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)
 
-
 ## Why This Project Exists
-Trading platforms (such as [3Commas](https://3commas.io/) and [Alertatron](https://alertatron.com/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades. 
 
-When using a **TradingView indicator** (such as [Material Indicators](https://materialindicators.com/)), you can send signals to your trading bot using **TradingView alerts** 
+Trading platforms (such as [3Commas](https://3commas.io/) and [Alertatron](https://alertatron.com/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades.
 
-So what if you want to use an indicator to trade across dozens or hundreds of pairs? Because there is no TradingView API to add alerts in bulk, you'd need to maintain those alerts by hand. 
+When using a **TradingView indicator** (such as [Material Indicators](https://materialindicators.com/)), you can send signals to your trading bot using **TradingView alerts**
+
+So what if you want to use an indicator to trade across dozens or hundreds of pairs? Because there is no TradingView API to add alerts in bulk, you'd need to maintain those alerts by hand.
 
 ## How does this tool work?
 
 Using open source software designed for automated website testing, we can enter as many custom alerts as your TradingView account allows. It installs its very own Chrome browser (called Chromium) which is controlled by this script.
 
 Watch as this tool enters your TradingView alerts automatically.
-
 
 <img src=".README_images/alert_tool_demo.gif" alt="demo video of tool" width="600"/>
 
@@ -45,14 +40,14 @@ MacOS/Windows/Linux
 Open Terminal/PowerShell and run the following:
 
     # make sure you're running at least node version 16
-    node -v 
+    node -v
 
     # create your tradingview-alerts-home directory and/or upgrade version
     npx @alleyway/create-tradingview-alerts-home
-    
+
     # Follow prompts to initialize your tradingview-alerts-home
-    
-Edit your config.yml file (if you're passing signals for automated trading such as 3commas, configure those details here) 
+
+Edit your config.yml file (if you're passing signals for automated trading such as 3commas, configure those details here)
 
 ```yaml
 files:
@@ -65,8 +60,8 @@ tradingview:
   # examples: 1s | 30s | 1m | 15m | 1H | 1D | 1W      # NOTE: '1H,4H' to add alerts across multiple intervals
   interval: 4h
   # Optionally supply login details or login manually once and restart script
-  #username: 
-  #password: 
+  #username:
+  #password:
 alert:
   condition:
     primaryLeft: MTF Deviation
@@ -74,9 +69,9 @@ alert:
     secondary: Tier1 long
     tertiaryLeft:
     tertiaryRight:
-    quaternaryLeft: 
+    quaternaryLeft:
     quaternaryRight:
-  option: Once Per Bar Close
+  option: once-per-bar-close
   actions:
     notifyOnApp: false
     showPopup: false
@@ -99,125 +94,109 @@ alert:
 
 <img src=".README_images/howto_conditions.png" alt="Fields corresponding to configuration" width="600"/>
 
-
 ## Fetching Trading Pairs
 
-Creates CSV file for use as input (see above config) for supported exchanges. Want other exchanges? [File an issue!](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)) 
+Creates CSV file for use as input (see above config) for supported exchanges. Want other exchanges? [File an issue!](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new))
 
 #### Download Trading Pairs From Binance/BinanceUS
 
-This command downloads all USDT trading pairs for Binance: 
-```yaml 
-    ./atat fetch-symbols binance -q usdt
-    
-    # Creates binance_usdt_symbols.csv    
+This command downloads all USDT trading pairs for Binance:
+
+```yaml
+./atat fetch-symbols binance -q usdt
+# Creates binance_usdt_symbols.csv
 ```
 
 This command downloads all trading pairs for BinanceUS:
-```yaml
-    ./atat fetch-symbols binanceus
 
-    # Creates binanceus_symbols.csv
+```yaml
+./atat fetch-symbols binanceus
+# Creates binanceus_symbols.csv
 ```
 
 #### Download Trading Pairs From FTX
 
-You can also use the `--classification` flag to only grab symbols of a certain type (options available are  "spot", "leveraged_token", "futures_perpetual", "futures_dated") 
+You can also use the `--classification` flag to only grab symbols of a certain type (options available are "spot", "leveraged_token", "futures_perpetual", "futures_dated")
 
 ```yaml
-    ./atat fetch-symbols ftx --classification leveraged_token
-
-    # Creates ftx_leveraged_token_symbols.csv
+./atat fetch-symbols ftx --classification leveraged_token
+# Creates ftx_leveraged_token_symbols.csv
 ```
-
 
 #### Download Trading Pairs From Coinbase
 
 ```yaml
-    ./atat fetch-symbols coinbase -q usd
-
-    # Creates coinbase_usd_symbols.csv
+./atat fetch-symbols coinbase -q usd
+# Creates coinbase_usd_symbols.csv
 ```
-
 
 #### Download Trading Pairs From Bittrex
 
 ```yaml
-    ./atat fetch-symbols bittrex -q btc
-
-    # Creates bittrex_btc_symbols.csv
+./atat fetch-symbols bittrex -q btc
+# Creates bittrex_btc_symbols.csv
 ```
 
 #### Download Trading Pairs From Kraken
 
 ```yaml
-    ./atat fetch-symbols kraken -q usd
-
-    # Creates kraken_usd_symbols.csv
+./atat fetch-symbols kraken -q usd
+# Creates kraken_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From KuCoin
 
 ```yaml
-    ./atat fetch-symbols kucoin -q usdt
-
-    # Creates kucoin_usd_symbols.csv
+./atat fetch-symbols kucoin -q usdt
+# Creates kucoin_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From OKX (formerly OKEx)
 
 ```yaml
-    ./atat fetch-symbols okx_spot -q usdt
-
-    # Creates okx_spot_usdt_symbols.csv
+./atat fetch-symbols okx_spot -q usdt
+# Creates okx_spot_usdt_symbols.csv
 ```
 
 #### Download Trading Pairs From ByBit
 
 ```yaml
-    ./atat fetch-symbols bybit_derivatives
-
-    # Creates bybit_derivatives_symbols.csv
+./atat fetch-symbols bybit_derivatives
+# Creates bybit_derivatives_symbols.csv
 ```
-
 
 ...and so on..
 
-
-## Adding TradingView Alerts 
+## Adding TradingView Alerts
 
 ### Before you run the script
 
 When adding alerts TradingView uses your last settings as defaults for new alerts.
-If not explicitly set in the config.yml file, it will use the settings from the last alert made. So if you prefer to play a sound or not, create an alert with that setting before running the script. 
+If not explicitly set in the config.yml file, it will use the settings from the last alert made. So if you prefer to play a sound or not, create an alert with that setting before running the script.
 
 You must actually create an alert once with those options, before they become defaults. (You can immediately delete the alert)
 
-### Running the script 
+### Running the script
 
-NOTE: You'll need to log into TradingView the first time you run the script, then you'll need to close the browser and re-run the command 
+NOTE: You'll need to log into TradingView the first time you run the script, then you'll need to close the browser and re-run the command
 
     ./atat add-alerts
 
 You can stop the script in Terminal/PowerShell by pressing Ctrl-C
-    
+
 If the tool gets interrupted for some reason, you can remove the rows of already-added alert symbols (from the .csv) and re-run
-
-
 
 ## Troubleshooting
 
-* Windows users having issues executing because of a thing downloaded off the internet (contributed by a user)
+- Windows users having issues executing because of a thing downloaded off the internet (contributed by a user)
 
+  powershell -executionpolicy ByPass -File .\atat.ps1 fetch-symbols binance -q usdt
 
-    powershell -executionpolicy ByPass -File .\atat.ps1 fetch-symbols binance -q usdt
+- Moving too fast for your connection speed? Try adjusting the delay option (default is 1000)
 
-* Moving too fast for your connection speed? Try adjusting the delay option (default is 1000) 
+  ./atat --delay 1500 add-alerts
 
-
-    ./atat --delay 1500 add-alerts 
-
-* Selecting the wrong option? Conditions can be regular expressions. For example...
+- Selecting the wrong option? Conditions can be regular expressions. For example...
 
 Let's say you have a conditions dropdown with multiple indicator configurations like so:
 
@@ -253,13 +232,11 @@ alert:
 
 ❓[Learn more about regular expression syntax](https://www.w3schools.com/jsref/jsref_obj_regexp.asp)
 
+- "atat" command not found? From your tradingview-alerts-home directory run the following:
 
-* "atat" command not found? From your tradingview-alerts-home directory run the following:
+  npx @alleyway/create-tradingview-alerts-home
 
-
-    npx @alleyway/create-tradingview-alerts-home
-
-* Any other hiccups? [File an issue](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)
+- Any other hiccups? [File an issue](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)
 
 ## Advanced Usage
 
@@ -267,19 +244,18 @@ alert:
 
 A configured TradingView Indicator that works for assets quoted in BTC may not be appropriate for USD pairs, therefore, you'll want to segment your setup as follows:
 
-| Abstract                                                                                                        | Concretely                                                                                                                                                                                            |
-|-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_symbols.csv                                                                                                                             |
-| TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                                 |
-| 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote_asset}}_{{instrument}}"<br>} |
-| A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                                      |
+| Abstract                                                                                                        | Concretely                                                                                                                                                                             |
+| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_symbols.csv                                                                                                              |
+| TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                  |
+| 3commas trading bot to handle only BTC                                                                          | {<br> "message*type": "bot",<br> "bot_id": 999999,<br> "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br> "delay_seconds": 0,<br> "pair": "{{quote_asset}}*{{instrument}}"<br>} |
+| A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                       |
 
 NOTE: running "./atat add-alerts" will default to config.yml unless you specify one (eg. "./atat add-alerts config.btc.yml")
 
-
 ### Token Replacement in Alert Settings
 
-There are some scenarios where you may want some pairs to use different indicators or the same indicator with different settings (must be added to the chart for each setting - this script CANNOT adjust indicator settings yet)  
+There are some scenarios where you may want some pairs to use different indicators or the same indicator with different settings (must be added to the chart for each setting - this script CANNOT adjust indicator settings yet)
 
 ![multiple indicators](.README_images/multiple_indicators.png)
 
@@ -296,13 +272,12 @@ BINANCE:ADAUSDT,USDT,ADA,20
 You can then use any value from your csv by surrounding the column header name with double braces as follows:
 
 ```yaml
-...
+
+---
 alert:
   condition:
     primaryLeft: "DSMA ({{DSMAsetting}}, 50)"
-...
 ```
-
 
 ### Send a single alert to multiple 3commas bots
 
@@ -311,21 +286,21 @@ alert:
 So you can use a JSON array for the message:
 
 ```yaml
-  message: >
-    [{
-        "message_type": "bot",
-        "bot_id": 999999,
-        "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
-        "delay_seconds": 0,
-        "pair": "{{quote_asset}}_{{instrument}}"
-    },
-    {
-        "message_type": "bot",
-        "bot_id": 999999,
-        "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
-        "delay_seconds": 0,
-        "pair": "{{quote_asset}}_{{instrument}}"
-    }]
+message: >
+  [{
+      "message_type": "bot",
+      "bot_id": 999999,
+      "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
+      "delay_seconds": 0,
+      "pair": "{{quote_asset}}_{{instrument}}"
+  },
+  {
+      "message_type": "bot",
+      "bot_id": 999999,
+      "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
+      "delay_seconds": 0,
+      "pair": "{{quote_asset}}_{{instrument}}"
+  }]
 ```
 
 ### Send an alert to Alertatron
@@ -333,29 +308,28 @@ So you can use a JSON array for the message:
 This works in the same way as for 3Commas, but Alertatron using a different format for its messages. For example...
 
 ```yaml
-  message: >
-    binanceKeys({{quote_asset}}_{{instrument}}) {
-        market(side=buy, amount=50%);
-        stopOrder(side=sell, amount=100%p, offset=2%);
-        limit(side=sell, amount=100%p, offset=3%);
-    }
+message: >
+  binanceKeys({{quote_asset}}_{{instrument}}) {
+      market(side=buy, amount=50%);
+      stopOrder(side=sell, amount=100%p, offset=2%);
+      limit(side=sell, amount=100%p, offset=3%);
+  }
 ```
 
-## Do You Find This Tool Helpful? 
+## Do You Find This Tool Helpful?
 
 Consider one of the following:
 
-1) Increase awareness on GitHub: Click the ⭐ at the top of the page!
+1. Increase awareness on GitHub: Click the ⭐ at the top of the page!
 
 ![Star this project](.README_images/github_star_animation.gif)
 
-2) Become a _FREE_ beta tester (limited time) of our eventual commercial service:    
+2. Become a _FREE_ beta tester (limited time) of our eventual commercial service:
 
-* **Graphical Interface:** Nothing to install - alerts added by our secure, private servers
-* **Multiple Alerts Per Symbol:** separate buy & sell alerts
-* **Faster Alert Management:** intelligently keeps/updates/adds/removes alerts
-* **Flexible Alert Template Assignment:** Use 24h exchange data(volume,tradecount) to enable/disable alerts
-* **Automation:** Configure and sychronize alerts on a schedule, fetch new exchange tokens 
- 
+- **Graphical Interface:** Nothing to install - alerts added by our secure, private servers
+- **Multiple Alerts Per Symbol:** separate buy & sell alerts
+- **Faster Alert Management:** intelligently keeps/updates/adds/removes alerts
+- **Flexible Alert Template Assignment:** Use 24h exchange data(volume,tradecount) to enable/disable alerts
+- **Automation:** Configure and sychronize alerts on a schedule, fetch new exchange tokens
+
 _**Create a free account at [https://alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_bottom)**_
-

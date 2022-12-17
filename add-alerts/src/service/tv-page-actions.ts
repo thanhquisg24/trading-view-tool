@@ -122,40 +122,34 @@ export const configureInterval = async (interval: string, page) => {
 
 // queries used on the alert conditions
 const dropdownXpathQueries = {
-  primaryLeft:
-    "//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-  primaryRight:
-    "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-  secondary:
-    "//*[contains(@class,'tv-control-fieldset__value tv-alert-dialog__fieldset-value js-condition-operator-input-wrap')]/*[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+  //name of indicator e.g long.10.BB.WT.ver.3
+  primaryLeft: "//span[contains(@data-name, 'main-series-select')]",
+  //condition select func e.g Any alert() function call
+  // primaryRight:
+  //   "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
 
-  tertiaryLeft:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
-  quaternaryLeft:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
+  secondary: "//span[contains(@data-name, 'operator-select')]",
 
-  tertiaryRight:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
-  quaternaryRight:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
+  // tertiaryLeft:
+  //   "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
+  // quaternaryLeft:
+  //   "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
+
+  // tertiaryRight:
+  //   "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
+  // quaternaryRight:
+  //   "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
 };
 
-const dropdownSoundXpathQueries = {
-  name: "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--left')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-  duration:
-    "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--right')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-};
+// const dropdownSoundXpathQueries = {
+//   name: "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--left')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+//   duration:
+//     "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--right')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+// };
 
 const inputXpathQueries = {
-  tertiaryLeft:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[1]",
-  tertiaryRight:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[1]",
-
-  quaternaryLeft:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[2]",
-  quaternaryRight:
-    "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[2]",
+  tertiaryLeft: "//input[contains(@data-property-id, 'start-band-range')]",
+  tertiaryRight: "//input[contains(@data-property-id, 'end-band-range')]",
 };
 
 const readOnlyInputQueries = {
@@ -166,17 +160,26 @@ const readOnlyInputQueries = {
 };
 
 const alertActionCorresponding = {
-  notifyOnApp: "send-push",
-  showPopup: "show-popup",
-  sendEmail: "send-email",
-  webhook: "webhook-toggle",
-  playSound: "play-sound",
+  // notifyOnApp: "send-push",
+  // showPopup: "show-popup",
+  // sendEmail: "send-email",
+  webhook: "webhook",
+  // playSound: "play-sound",
 };
 
 const clickInputAndDelete = async (page, inputElement) => {
   /* istanbul ignore next */
   await page.evaluate((el) => (el.value = ""), inputElement);
+  // await page.click(inputElement, { clickCount: 3 });
+  // await page.keyboard.press("Backspace");
 };
+const clickInputAndPutValue = async (page, inputElement, value) => {
+  /* istanbul ignore next */
+  // await page.evaluate((el, value) => (el.value = value), inputElement, value);
+  await inputElement.click({ clickCount: 3 });
+  await inputElement.type(String(value), { delay: 20 });
+};
+
 const chormeConfig = {
   executablePath: process.env.EXCEUTE_PATH,
   headless: false,
@@ -351,7 +354,7 @@ export const configureSingleAlertSettings = async (
 
     log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`);
     const selector =
-      "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
+      "//div[@data-name='menu-inner']//span[@class='selectItem-mqgcjOOh']";
 
     await page.waitForXPath(selector, { timeout: 8000 });
     const elements = await page.$x(selector);
@@ -431,8 +434,13 @@ export const configureSingleAlertSettings = async (
               1000
             );
             log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`);
-            await clickInputAndDelete(page, valueInput);
-            await valueInput.type(String(conditionOrInputValue));
+            // await clickInputAndDelete(page, valueInput);
+            // await valueInput.type(String(conditionOrInputValue));
+            await clickInputAndPutValue(
+              page,
+              valueInput,
+              conditionOrInputValue
+            );
           } catch (inputError) {
             if (inputError.constructor.name === "TimeoutError") {
               if (!readOnlyInputQueries[key])
@@ -513,7 +521,8 @@ export const configureSingleAlertSettings = async (
   if (!!option) {
     log.trace(`Looking for option: ${kleur.blue(option)}`);
 
-    const selector = "//*[@class='js-fire-rate-row']//div[@data-title]";
+    const selector =
+      "//*[@class='fieldsColumn-jmVgZyeQ fieldsColumn-KnXQIBVy']//button[@data-name]";
 
     try {
       await page.waitForXPath(selector, { timeout: 8000 });
@@ -534,7 +543,7 @@ export const configureSingleAlertSettings = async (
     for (const el of elements) {
       /* istanbul ignore next */
       let optionText = await page.evaluate(
-        (element) => element.dataset.title,
+        (element) => element.dataset.name,
         el
       );
       foundOptions.push(optionText);
@@ -545,7 +554,7 @@ export const configureSingleAlertSettings = async (
         /* istanbul ignore next */
         await page.evaluate((text) => {
           const el = document.evaluate(
-            `//*[@class='js-fire-rate-row']//div[@data-title='${text}']`,
+            `//*[@class='fieldsColumn-jmVgZyeQ fieldsColumn-KnXQIBVy']//button[@data-name='${text}']`,
             document,
             null,
             XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -554,31 +563,58 @@ export const configureSingleAlertSettings = async (
           el.click();
         }, option);
         await waitForTimeout(0.4);
-        const justClickedEl = await fetchFirstXPath(
-          page,
-          `//*[@class='js-fire-rate-row']//div[@data-title='${option}']/..`
-        );
+        // const justClickedEl = await fetchFirstXPath(
+        //   page,
+        //   `//*[@class='fieldsColumn-jmVgZyeQ fieldsColumn-KnXQIBVy']//button[@data-name='${option}']/..`
+        // );
 
-        /* istanbul ignore next */
-        const className = await page.evaluate(
-          (el) => el.className,
-          justClickedEl
-        );
+        // /* istanbul ignore next */
+        // const className = await page.evaluate(
+        //   (el) => el.className,
+        //   justClickedEl
+        // );
 
-        if (className.indexOf("i-active") < 0) {
-          log.error(
-            "option element was clicked, but it's parent does not have the 'i-active' class assigned"
-          );
-          throw Error(
-            "Unable to select option correctly...a bug in the system"
-          );
-        }
+        // if (className.indexOf("selected-msfP1I4t") < 0) {
+        //   log.error(
+        //     "option element was clicked, but it's parent does not have the 'selected-msfP1I4t' class assigned"
+        //   );
+        //   throw Error(
+        //     "Unable to select option correctly...a bug in the system"
+        //   );
+        // }
       }
     }
     if (!found) throw new SelectionError(option, foundOptions);
   }
 
+  if (!!name) {
+    log.trace(`Setting Alert Name: ${kleur.blue(name)}`);
+    const nameInput = await fetchFirstXPath(page, "//input[@id='alert-name']");
+    // await clickInputAndDelete(page, nameInput);
+    // await nameInput.type(name);
+    await clickInputAndPutValue(page, nameInput, name);
+    await waitForTimeout(0.5);
+  }
+
+  if (!!message) {
+    log.trace(`Setting message: ${kleur.blue(message)}`);
+    const messageTextarea = await fetchFirstXPath(
+      page,
+      "//textarea[@id='alert-message']"
+    );
+    // await clickInputAndDelete(page, messageTextarea);
+    // await messageTextarea.type(message);
+    await clickInputAndPutValue(page, messageTextarea, message);
+  }
+
   // alert actions
+  const elNotify = await fetchFirstXPath(
+    page,
+    "//button[@data-name='notifications']"
+  );
+  elNotify.click();
+  // await page.waitForSelector("//button[@data-name='notifications']");
+  // await page.click("//button[@data-name='notifications']");
 
   for (const [configKey, elementInputName] of Object.entries(
     alertActionCorresponding
@@ -587,10 +623,11 @@ export const configureSingleAlertSettings = async (
       await waitForTimeout(0.3);
       const el = await fetchFirstXPath(
         page,
-        `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`
+        `//span[contains(@data-name, '${elementInputName}')]//input[@type='checkbox']`
       );
       /* istanbul ignore next */
       const isChecked = await page.evaluate((element) => element.checked, el);
+      console.log("🚀 ~ file: tv-page-actions.ts:618 ~ isChecked", isChecked);
 
       if (configKey === "webhook") {
         if (isChecked != actions.webhook.enabled) {
@@ -603,104 +640,15 @@ export const configureSingleAlertSettings = async (
           log.trace(`typing webhook url: ${kleur.blue(actions.webhook.url)}`);
           const webhookUrlEl = await fetchFirstXPath(
             page,
-            `//div[contains(@class, 'tv-dialog')]//input[@name='webhook-url']`,
+            `//input[contains(@class, 'input-oiYdY6I4 with-end-slot-oiYdY6I4')]`,
             1000
           );
-          await clickInputAndDelete(page, webhookUrlEl);
-          await webhookUrlEl.type(String(actions.webhook.url));
-        }
-      } else if (configKey === "playSound") {
-        const moreOptionsEl = await fetchFirstXPath(
-          page,
-          "//span[contains(@class, 'toggle-text--less')]/..",
-          1000
-        );
-        moreOptionsEl.evaluate((b) => b.click());
-
-        if (
-          actions.playSound?.enabled !== undefined &&
-          isChecked != actions.playSound?.enabled
-        ) {
-          log.trace(`setting ${kleur.blue("play-sound")} input as checked`);
-          el.click();
-          await waitForTimeout(0.3);
-        }
-        if (
-          actions.playSound?.enabled &&
-          actions.playSound?.name &&
-          actions.playSound?.duration
-        ) {
-          {
-            await waitForTimeout(0.5);
-
-            log.trace(
-              `Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`
-            );
-            const targetElement = await fetchFirstXPath(
-              page,
-              dropdownSoundXpathQueries["name"],
-              3000
-            );
-            log.trace(
-              `Found dropdown! Clicking element of ${kleur.yellow(
-                actions.playSound.name
-              )}`
-            );
-            targetElement.evaluate((b) => b.click());
-            await waitForTimeout(0.3);
-            await selectFromDropDown(actions.playSound.name);
-          }
-          {
-            await waitForTimeout(0.5);
-            log.trace(
-              `Looking for DROPDOWN xpath of ${kleur.yellow(
-                "playSound.duration"
-              )}`
-            );
-            const targetElement = await fetchFirstXPath(
-              page,
-              dropdownSoundXpathQueries["duration"],
-              3000
-            );
-            log.trace(
-              `Found dropdown! Clicking element of ${kleur.yellow(
-                actions.playSound.duration
-              )}`
-            );
-            targetElement.evaluate((b) => b.click());
-            await waitForTimeout(0.3);
-            await selectFromDropDown(actions.playSound.duration);
-          }
-          await waitForTimeout(0.5);
-        }
-      } else {
-        if (isChecked != actions[configKey]) {
-          log.trace(`setting ${kleur.blue(configKey)} as checked`);
-          el.click();
+          // await clickInputAndDelete(page, webhookUrlEl);
+          // await webhookUrlEl.type(String(actions.webhook.url));
+          await clickInputAndPutValue(page, webhookUrlEl, actions.webhook.url);
         }
       }
     }
-  }
-
-  if (!!name) {
-    log.trace(`Setting Alert Name: ${kleur.blue(name)}`);
-    const nameInput = await fetchFirstXPath(
-      page,
-      "//input[@name='alert-name']"
-    );
-    await clickInputAndDelete(page, nameInput);
-    await nameInput.type(name);
-    await waitForTimeout(0.5);
-  }
-
-  if (!!message) {
-    log.trace(`Setting message: ${kleur.blue(message)}`);
-    const messageTextarea = await fetchFirstXPath(
-      page,
-      "//textarea[@class='tv-control-textarea']"
-    );
-    await clickInputAndDelete(page, messageTextarea);
-    await messageTextarea.type(message);
   }
 };
 
@@ -708,7 +656,7 @@ export const clickSubmit = async (page) => {
   log.trace("clickSubmit()");
   const submitButton = await fetchFirstXPath(
     page,
-    `//div[contains(@class, 'tv-dialog')]/*/div[@data-name='submit']`
+    `//div[contains(@data-name, 'alerts-create-edit-dialog')]//button[@data-name='submit']`
   );
   submitButton.evaluate((b) => b.click());
 };
@@ -756,7 +704,8 @@ export const addAlert = async (
   const isNotShowingAlertDialog = async () => {
     return !(await isXpathVisible(
       page,
-      "//div[contains(@class, 'tv-alert-dialog')]"
+      "//div[contains(@data-name, 'alerts-create-edit-dialog')]"
+      // "//div[contains(@class, 'tv-alert-dialog')]"
     ));
   };
 

@@ -324,12 +324,12 @@ export const addAlertsMain = async (configFileName) => {
       log.error(e.message);
       if (e instanceof InvalidSymbolError) {
         e.symbol = row.symbol;
-        await browser.close();
+        // await browser.close();
         throw e;
       }
     }
   }
 
   await waitForTimeout(5, "waiting a little before closing");
-  await browser.close();
+  // await browser.close();
 };

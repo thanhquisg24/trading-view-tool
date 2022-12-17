@@ -10,9 +10,10 @@ describe("Add Alerts Test", () => {
 
   it("addAlerts(configFile)", async () => {
     // create a symbols csv file as example
+    const symbol = "BINANCE:NEARUSDTPERP";
     const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
     const csvContent = `symbol,instrument,quote_asset,alert_name
-GLOBALPRIME:AUDUSD/0.70874+1/GLOBALPRIME:EURAUD*1.50676+1/GLOBALPRIME:GBPAUD*1.77447+GLOBALPRIME:AUDCHF/0.68181+GLOBALPRIME:AUDCAD/0.90837+GLOBALPRIME:AUDJPY/90.223+GLOBALPRIME:AUDNZD/1.09412,BTC,USDT, "my CI test name"
+${symbol},NEARUSDT,USDT,"${symbol} my CI test name"
 ASDFTEST,ASDF,TEST, "creating invalid symbol"
 `;
     writeFileSync(ciSymbolsCsvPath, csvContent, { encoding: "utf-8" });
@@ -46,7 +47,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
     config.tradingview.chartUrl = process.env.TEST_TRADINGVIEW_CHART;
     config.tradingview.username = process.env.TEST_TRADINGVIEW_USERNAME;
     config.tradingview.password = process.env.TEST_TRADINGVIEW_PASSWORD;
-    config.alert.actions.webhook.enabled = false;
+    config.alert.actions.webhook.enabled = true;
 
     //config.tradingview.interval = "1h, 4h"
 

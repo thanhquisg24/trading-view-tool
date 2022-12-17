@@ -12,33 +12,12 @@ tradingview:
   #password: SuperSecret
 alert:
   condition: # tertiary/quaternary rows might not exist for your indicator. If not remove those values
-    primaryLeft: RSI
-    primaryRight:
-    secondary: Moving Up
-    tertiaryLeft: 3.4
-    tertiaryRight: 14
-    quaternaryLeft:
-    quaternaryRight:
-  option: Once Per Bar Close
+    primaryLeft: long.10.BB.WT.ver.3
+    secondary: Any alert() function call
   actions:
-    notifyOnApp: false
-    showPopup: false
-    sendEmail: false
     webhook:
       enabled: true
       url: "https://3commas.io/trade_signal/trading_view"
-    playSound:
-      enabled: true
-      name: "Thin"
-      duration: "Once"
   # alert name is optional - can override in csv if you add a "name" column. can use {{symbol|base|quote}}
-  # name: "MI dev3 for {{base}} {{quote}}"
+  name: "MI dev3 for {{base}} {{quote}}"
   # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
-  message: >
-    {
-         "message_type": "bot",
-         "bot_id": 999999,
-         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
-         "delay_seconds": 0,
-         "pair": "{{quote_asset}}_{{instrument}}"
-    }
