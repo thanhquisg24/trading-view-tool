@@ -264,6 +264,16 @@ export const login = async (page, username, pass) => {
   log.trace("clicking submit button");
   submitButton.click();
   await waitForTimeout(2);
+
+  //check captcha visible
+  if (await isXpathVisible(page, "//iframe[contains(@title,'reCAPTCHA')]")) {
+    log.info("----found captcha----");
+    log.info("----begin solve captcha----");
+    await page.solveRecaptchas();
+    log.info("----end solve captcha----");
+    await waitForTimeout(1);
+    submitButton.click();
+  }
 };
 
 export const logout = async (page) => {
