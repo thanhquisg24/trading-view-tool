@@ -1,9 +1,51 @@
-export interface IConfigCoin {
+export interface ICoinLong {
+  timeFrame: number;
+  symbol: string;
+  // candlema_type?: CANDLE_ma_typeS;
+  strategyLong: {
+    useMa?: boolean;
+    useBol?: boolean;
+    useUptrend?: boolean;
+    useWt?: boolean;
+    useRsiCross?: boolean;
+    minMa100Percents?: number;
+    minMa50Percents?: number;
+    BolMinPercents?: number;
+    PinbarPercents?: number;
+    rsiOverBuy?: number;
+    rsiOverSell?: number;
+    rsiUnderSMA?: boolean;
+    rsiSMAignore?: number;
+  };
+  SO: {
+    TP: number;
+    maxSO: number;
+    SO_PercentDrawdown: number;
+    SO_VolScale: number;
+    SO_StepScale: number;
+  };
+  MA: {
+    ma_slow: number;
+    ma_fast: number;
+    ma_signal: number;
+    ma_type: number;
+  };
+  waveTrend: {
+    overSellLv1: number;
+    overSellLv2: number;
+  };
+  rsiConfig: {
+    rsiLength: number;
+    smaLength: number;
+  };
+}
+
+export interface IConfigCoinDetail {
   indicatorName: string;
   symbol: string;
   timeFrame: number;
   config: {
-    [key: string]: {};
+    [key: string]: any;
   };
 }
 // export const;
@@ -73,7 +115,6 @@ export const LongStudyTemplate: IStudyTemplate = {
       index: 4,
       type: "checkbox",
     },
-
     useMa100Filter: {
       class: "input-bUw_gKIQ",
       index: 6,
@@ -176,3 +217,45 @@ export const LongStudyTemplate: IStudyTemplate = {
     },
   },
 };
+
+export const coinlongtop: ICoinLong[] = [
+  {
+    timeFrame: 33,
+    symbol: "BINANCE:AAVEUSDTPERP",
+    strategyLong: {
+      // useUptrend: true,
+      useBol: true,
+      useRsiCross: true,
+      useWt: true,
+      minMa100Percents: 1,
+      minMa50Percents: 0.3,
+      BolMinPercents: 3,
+      PinbarPercents: 0.0001,
+      rsiOverSell: 22,
+      rsiOverBuy: 49,
+      // rsiSMAignore: 30,
+    },
+    waveTrend: {
+      overSellLv1: -58,
+      overSellLv2: 30,
+    },
+    SO: {
+      TP: 0.88,
+      maxSO: 3,
+      SO_PercentDrawdown: 6,
+      SO_VolScale: 2,
+      SO_StepScale: 2.3,
+    },
+    MA: {
+      ma_slow: 200,
+      ma_fast: 100,
+      ma_signal: 50,
+      ma_type: 2,
+    },
+    rsiConfig: {
+      rsiLength: 10,
+      smaLength: 10,
+    },
+    //232u ,232 trades,87% win,1.5 factor ,drawdown 206u
+  },
+];
