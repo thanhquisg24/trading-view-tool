@@ -5,16 +5,24 @@ import {
   styleOverride,
   waitForTimeout,
 } from "./common-service";
-import { ICoinLong } from "./indicator-config";
+import {
+  ICoinLong,
+  IConfigCoinDetail,
+  LongStudyTemplate,
+} from "./indicator-config";
 import log, { logLogInfo } from "./log";
 import {
   checkForInvalidSymbol,
   configureInterval,
+  isMatch,
   launchBrowser,
   login,
   minimizeFooterChartPanel,
   navigateToSymbol,
+  takeScreenshot,
 } from "./tv-page-actions";
+import kleur from "kleur";
+import { SelectionError } from "../classes";
 
 export const loginFlow = async (): Promise<{
   browser: Browser;
@@ -83,20 +91,71 @@ export const loginFlow = async (): Promise<{
 export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
   try {
     const currentInterval = `${coinItem.timeFrame}`;
-    await configureInterval(currentInterval.trim(), page);
-    await waitForTimeout(3, "after changing the interval");
-    await waitForTimeout(2, "let things settle from processing last alert");
-    await navigateToSymbol(page, coinItem.symbol);
-    await checkForInvalidSymbol(page, coinItem.symbol);
+    // await configureInterval(currentInterval.trim(), page);
+    // await waitForTimeout(3, "after changing the interval");
+    // await waitForTimeout(2, "let things settle from processing last alert");
+    // await navigateToSymbol(page, coinItem.symbol);
+    // await checkForInvalidSymbol(page, coinItem.symbol);
     await waitForTimeout(2, "after navigating to ticker");
 
+    const templatePanel = LongStudyTemplate;
+    const detailCoinItem: IConfigCoinDetail = {
+      indicatorName: LongStudyTemplate.indicatorName,
+      symbol: coinItem.symbol,
+      timeFrame: coinItem.timeFrame,
+      config: {},
+    };
     //2 open config long study pannel
+    log.trace(
+      `searching menu for ${kleur.yellow(detailCoinItem.indicatorName)}`
+    );
+    const selectorIndicator = "//div[@data-name='legend-source-item']";
 
+    await page.waitForXPath(selectorIndicator, { timeout: 8000 });
+    const elements = await page.$x(selectorIndicator);
+
+    if (elements.length == 0) {
+      await takeScreenshot(page, "zero_indicators");
+    }
+    let found = false;
+    let foundOptions = [];
+    const conditionToMatch = detailCoinItem.indicatorName;
+    for (const el of elements) {
+      /* istanbul ignore next */
+      let optionText = await page.evaluate((element) => {
+        const textElem = element.querySelector(
+          `div[data-name="legend-source-title"]`
+        );
+        if (textElem) {
+          return textElem.innerText;
+        }
+        return "";
+      }, el);
+      optionText = optionText.replace(/[\u200B]/g, "");
+      foundOptions.push(optionText);
+      if (isMatch(conditionToMatch, optionText)) {
+        log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
+        found = true;
+        // el.click();
+        // await waitForTimeout(0.5, "after click  legend-source-item");
+
+        await page.evaluateHandle(
+          (element) =>
+            element
+              .querySelector('div[data-name="legend-settings-action"]')
+              .click(),
+          el
+        );
+
+        return;
+      }
+    }
+    if (!found) throw new SelectionError(conditionToMatch, foundOptions);
     //3 fill all setting and selector for each item
 
     //4 click btn ok to close panel
   } catch (e) {
-    console.error("configureStudyLongItem Fail!");
+    console.error("configureStudyLongItem Fail!", e.message);
     throw e;
   }
 };

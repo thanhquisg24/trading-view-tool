@@ -324,7 +324,7 @@ export const navigateToSymbol = async (page, symbol: string) => {
   await waitForTimeout(1.5);
 };
 
-const isMatch = (needle: string, haystack: string) => {
+export const isMatch = (needle: string, haystack: string) => {
   if (needle.startsWith("/")) {
     log.trace(
       `Parsing what appears to be regular expression: ${kleur.yellow(

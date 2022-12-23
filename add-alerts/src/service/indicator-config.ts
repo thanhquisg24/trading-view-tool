@@ -1,4 +1,5 @@
 export interface ICoinLong {
+  [x: string]: any;
   timeFrame: number;
   symbol: string;
   // candlema_type?: CANDLE_ma_typeS;
