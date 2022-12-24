@@ -137,7 +137,11 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
         log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
         found = true;
         // el.click();
-        // await waitForTimeout(0.5, "after click  legend-source-item");
+        await page.evaluate((element) => {
+          element.classList.add("selected-G1_Pfvwd");
+          return "";
+        }, el);
+        await waitForTimeout(0.5, "after click  legend-source-item");
 
         await page.evaluateHandle(
           (element) =>
