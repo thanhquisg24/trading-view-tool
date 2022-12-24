@@ -109,7 +109,8 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
     log.trace(
       `searching menu for ${kleur.yellow(detailCoinItem.indicatorName)}`
     );
-    const selectorIndicator = "//div[@data-name='legend-source-item']";
+    const selectorIndicator =
+      "//div[@data-name='legend-source-item']//div[@data-name='legend-settings-action']";
 
     await page.waitForXPath(selectorIndicator, { timeout: 8000 });
     const elements = await page.$x(selectorIndicator);
@@ -121,9 +122,10 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
     let foundOptions = [];
     const conditionToMatch = detailCoinItem.indicatorName;
     for (const el of elements) {
-      /* istanbul ignore next */
       let optionText = await page.evaluate((element) => {
-        const textElem = element.querySelector(
+        const parent = element.closest("div[data-name='legend-source-item']");
+        parent.classList.add("selected-G1_Pfvwd");
+        const textElem = parent.querySelector(
           `div[data-name="legend-source-title"]`
         );
         if (textElem) {
@@ -136,21 +138,9 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
       if (isMatch(conditionToMatch, optionText)) {
         log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
         found = true;
-        // el.click();
-        await page.evaluate((element) => {
-          element.classList.add("selected-G1_Pfvwd");
-          return "";
-        }, el);
-        await waitForTimeout(0.5, "after click  legend-source-item");
-
-        await page.evaluateHandle(
-          (element) =>
-            element
-              .querySelector('div[data-name="legend-settings-action"]')
-              .click(),
-          el
-        );
-
+        await waitForTimeout(0.5, "before click legend-settings-action");
+        el.click();
+        await waitForTimeout(0.5, "after click legend-settings-action");
         return;
       }
     }
