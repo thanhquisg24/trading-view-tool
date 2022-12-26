@@ -637,7 +637,6 @@ export const configureSingleAlertSettings = async (
       );
       /* istanbul ignore next */
       const isChecked = await page.evaluate((element) => element.checked, el);
-      console.log("🚀 ~ file: tv-page-actions.ts:618 ~ isChecked", isChecked);
 
       if (configKey === "webhook") {
         if (isChecked != actions.webhook.enabled) {

@@ -15,6 +15,7 @@ import {
   checkForInvalidSymbol,
   configureInterval,
   isMatch,
+  isXpathVisible,
   launchBrowser,
   login,
   minimizeFooterChartPanel,
@@ -22,7 +23,7 @@ import {
   takeScreenshot,
 } from "./tv-page-actions";
 import kleur from "kleur";
-import { SelectionError } from "../classes";
+import { InvalidSymbolError, SelectionError, IndicatorError } from "../classes";
 
 export const loginFlow = async (): Promise<{
   browser: Browser;
@@ -146,6 +147,19 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
     }
     if (!found) throw new SelectionError(conditionToMatch, foundOptions);
     //3 fill all setting and selector for each item
+    log.trace("..make sure we're showing the indicator dialog");
+    const isNotShowingAlertDialog = async () => {
+      return !(await isXpathVisible(
+        page,
+        "//div[contains(@data-dialog-name, '" + conditionToMatch + "')]"
+        // "//div[contains(@class, 'tv-alert-dialog')]"
+      ));
+    };
+    if (await isNotShowingAlertDialog()) {
+      log.warn("NOT showing indicator dialog?");
+      log.error(" throwing error");
+      throw new IndicatorError();
+    }
 
     //4 click btn ok to close panel
   } catch (e) {
