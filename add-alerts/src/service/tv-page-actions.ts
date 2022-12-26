@@ -173,7 +173,7 @@ const clickInputAndDelete = async (page, inputElement) => {
   // await page.click(inputElement, { clickCount: 3 });
   // await page.keyboard.press("Backspace");
 };
-const clickInputAndPutValue = async (page, inputElement, value) => {
+export const clickInputAndPutValue = async (page, inputElement, value) => {
   /* istanbul ignore next */
   // await page.evaluate((el, value) => (el.value = value), inputElement, value);
   await inputElement.click({ clickCount: 3 });

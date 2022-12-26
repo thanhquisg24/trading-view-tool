@@ -5,14 +5,18 @@ import {
   styleOverride,
   waitForTimeout,
 } from "./common-service";
+import { get } from "lodash";
 import {
   ICoinLong,
   IConfigCoinDetail,
+  IConfigItemSelector,
+  IStudyTemplate,
   LongStudyTemplate,
 } from "./indicator-config";
 import log, { logLogInfo } from "./log";
 import {
   checkForInvalidSymbol,
+  clickInputAndPutValue,
   configureInterval,
   isMatch,
   isXpathVisible,
@@ -89,7 +93,12 @@ export const loginFlow = async (): Promise<{
   }
 };
 
-export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
+export const configureStudyLongItem = async (
+  page,
+  coinItem: ICoinLong,
+  coinTemplate: IStudyTemplate,
+  listKeyTemplate: string[]
+) => {
   try {
     const currentInterval = `${coinItem.timeFrame}`;
     // await configureInterval(currentInterval.trim(), page);
@@ -99,16 +108,15 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
     // await checkForInvalidSymbol(page, coinItem.symbol);
     await waitForTimeout(2, "after navigating to ticker");
 
-    const templatePanel = LongStudyTemplate;
     const detailCoinItem: IConfigCoinDetail = {
-      indicatorName: LongStudyTemplate.indicatorName,
+      indicatorName: coinTemplate.indicatorName,
       symbol: coinItem.symbol,
       timeFrame: coinItem.timeFrame,
       config: {},
     };
     //2 open config long study pannel
     log.trace(
-      `searching menu for ${kleur.yellow(detailCoinItem.indicatorName)}`
+      `searching study for ${kleur.yellow(detailCoinItem.indicatorName)}`
     );
     const selectorIndicator =
       "//div[@data-name='legend-source-item']//div[@data-name='legend-settings-action']";
@@ -142,16 +150,17 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
         await waitForTimeout(0.5, "before click legend-settings-action");
         el.click();
         await waitForTimeout(0.5, "after click legend-settings-action");
-        return;
+        // return;
       }
     }
     if (!found) throw new SelectionError(conditionToMatch, foundOptions);
+
     //3 fill all setting and selector for each item
     log.trace("..make sure we're showing the indicator dialog");
     const isNotShowingAlertDialog = async () => {
       return !(await isXpathVisible(
         page,
-        "//div[contains(@data-dialog-name, '" + conditionToMatch + "')]"
+        "//div[@data-name='indicator-properties-dialog']"
         // "//div[contains(@class, 'tv-alert-dialog')]"
       ));
     };
@@ -160,7 +169,66 @@ export const configureStudyLongItem = async (page, coinItem: ICoinLong) => {
       log.error(" throwing error");
       throw new IndicatorError();
     }
+    ///prepare data
+    let dataValueDetail: { [x: string]: any } = {
+      ...coinItem.strategyLong,
+      ...coinItem.waveTrend,
+      ...coinItem.rsiConfig,
+      ...coinItem.MA,
+    };
+    ///fill checkbox value
+    if (dataValueDetail.minMa100Percents > 0) {
+      dataValueDetail = { ...dataValueDetail, useMa100Filter: true };
+    }
+    if (dataValueDetail.minMa50Percents > 0) {
+      dataValueDetail = { ...dataValueDetail, useMa50Filter: true };
+    }
+    if (dataValueDetail.BolMinPercents > 0) {
+      dataValueDetail = { ...dataValueDetail, useBolFilter: true };
+    }
+    if (dataValueDetail.rsiSMAignore > 0) {
+      dataValueDetail = { ...dataValueDetail, useRSI_SMA_entry: true };
+    }
+    ///select all <input>
+    log.trace(
+      `searching dialog study for ${kleur.yellow(detailCoinItem.indicatorName)}`
+    );
+    const selectorAllInput =
+      "//div[@data-name='indicator-properties-dialog']//input";
 
+    await page.waitForXPath(selectorAllInput, { timeout: 8000 });
+    const allInput = await page.$x(selectorAllInput);
+
+    if (allInput.length == 0) {
+      await takeScreenshot(page, "zero_indicators");
+    } else {
+      for (let i = 0; i < listKeyTemplate.length; i++) {
+        const k = listKeyTemplate[i];
+        const infoInput: IConfigItemSelector = coinTemplate.configSelectors[k];
+        let value = get(dataValueDetail, k);
+        const indexOfinput = infoInput.index;
+        if (infoInput.type === "checkbox") {
+          value = value || false;
+          const isChecked = await page.evaluate(
+            (element) => element.checked,
+            allInput[indexOfinput]
+          );
+          if (isChecked != value) {
+            log.trace(`setting ${kleur.blue(k)} as checked | ${indexOfinput}`);
+            allInput[indexOfinput].click();
+            await waitForTimeout(0.3);
+          }
+        } else {
+          if (value) {
+            log.trace(
+              `Typing value: ${kleur.blue(k)} = ${value} | ${indexOfinput}`
+            );
+            await clickInputAndPutValue(page, allInput[indexOfinput], value);
+            await waitForTimeout(0.3);
+          }
+        }
+      }
+    }
     //4 click btn ok to close panel
   } catch (e) {
     console.error("configureStudyLongItem Fail!", e.message);
@@ -172,10 +240,17 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
   try {
     const { browser, page } = await loginFlow();
     const coinExamples: ICoinLong[] = coins;
+    const coinTemplate = LongStudyTemplate;
+    const listKeyTemplate = Object.keys(LongStudyTemplate.configSelectors);
     //set config all coins
     for (let index = 0; index < coinExamples.length; index++) {
       const coinItem = coinExamples[index];
-      await configureStudyLongItem(page, coinItem);
+      await configureStudyLongItem(
+        page,
+        coinItem,
+        coinTemplate,
+        listKeyTemplate
+      );
     }
   } catch (e) {
     console.error("configureStudyLongMain Fail!");

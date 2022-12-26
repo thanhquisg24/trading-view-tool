@@ -77,12 +77,12 @@ type LongElementTypes =
   | "rsiLength"
   | "smaLength";
 
-interface IConfigItemSelector {
+export interface IConfigItemSelector {
   class: string;
   index: number;
   type: "checkbox" | "text";
 }
-interface IStudyTemplate {
+export interface IStudyTemplate {
   indicatorName: string;
   configSelectors: {
     [key in LongElementTypes]: IConfigItemSelector;
@@ -116,104 +116,106 @@ export const LongStudyTemplate: IStudyTemplate = {
       index: 4,
       type: "checkbox",
     },
-    useMa100Filter: {
-      class: "input-bUw_gKIQ",
-      index: 6,
-      type: "checkbox",
-    },
-    useMa50Filter: {
-      class: "input-bUw_gKIQ",
+    minMa100Percents: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
       index: 7,
-      type: "checkbox",
+      type: "text",
     },
-    useBolFilter: {
+    useMa100Filter: {
       class: "input-bUw_gKIQ",
       index: 8,
       type: "checkbox",
-    },
-    useRSI_SMA_entry: {
-      class: "input-bUw_gKIQ",
-      index: 9,
-      type: "checkbox",
-    },
-    rsiUnderSMA: {
-      class: "input-bUw_gKIQ",
-      index: 10,
-      type: "checkbox",
-    },
-    minMa100Percents: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 1,
-      type: "text",
     },
     minMa50Percents: {
       class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 2,
-      type: "text",
-    },
-    BolMinPercents: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 3,
-      type: "text",
-    },
-    PinbarPercents: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 4,
-      type: "text",
-    },
-    rsiOverSell: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 5,
-      type: "text",
-    },
-    rsiOverBuy: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 6,
-      type: "text",
-    },
-    rsiSMAignore: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 7,
-      type: "text",
-    },
-    ma_type: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
-      index: 8,
-      type: "text",
-    },
-    ma_slow: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
       index: 9,
       type: "text",
     },
-    ma_fast: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+    useMa50Filter: {
+      class: "input-bUw_gKIQ",
       index: 10,
-      type: "text",
+      type: "checkbox",
     },
-    ma_signal: {
+    BolMinPercents: {
       class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
       index: 11,
       type: "text",
     },
-    overSellLv1: {
+    useBolFilter: {
+      class: "input-bUw_gKIQ",
+      index: 12,
+      type: "checkbox",
+    },
+
+    PinbarPercents: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 13,
+      type: "text",
+    },
+    rsiOverSell: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 14,
+      type: "text",
+    },
+    rsiOverBuy: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 15,
+      type: "text",
+    },
+    rsiSMAignore: {
       class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
       index: 16,
       type: "text",
     },
-    overSellLv2: {
-      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+    useRSI_SMA_entry: {
+      class: "input-bUw_gKIQ",
       index: 17,
+      type: "checkbox",
+    },
+    rsiUnderSMA: {
+      class: "input-bUw_gKIQ",
+      index: 18,
+      type: "checkbox",
+    },
+    ma_type: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 19,
       type: "text",
     },
-    rsiLength: {
+    ma_slow: {
       class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
       index: 20,
       type: "text",
     },
-    smaLength: {
+    ma_fast: {
       class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
       index: 21,
+      type: "text",
+    },
+    ma_signal: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 22,
+      type: "text",
+    },
+
+    overSellLv1: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 27,
+      type: "text",
+    },
+    overSellLv2: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 28,
+      type: "text",
+    },
+    rsiLength: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 31,
+      type: "text",
+    },
+    smaLength: {
+      class: "input-input-oiYdY6I4 with-end-slot-oiYdY6I4",
+      index: 32,
       type: "text",
     },
   },
@@ -224,21 +226,23 @@ export const coinlongtop: ICoinLong[] = [
     timeFrame: 33,
     symbol: "BINANCE:AAVEUSDTPERP",
     strategyLong: {
-      // useUptrend: true,
+      useUptrend: true,
       useBol: true,
       useRsiCross: true,
       useWt: true,
+      useMa: true,
       minMa100Percents: 1,
-      minMa50Percents: 0.3,
+      minMa50Percents: 2,
       BolMinPercents: 3,
-      PinbarPercents: 0.0001,
-      rsiOverSell: 22,
-      rsiOverBuy: 49,
-      // rsiSMAignore: 30,
+      PinbarPercents: 4,
+      rsiOverSell: 5,
+      rsiOverBuy: 6,
+      rsiSMAignore: 30,
+      rsiUnderSMA: true,
     },
     waveTrend: {
-      overSellLv1: -58,
-      overSellLv2: 30,
+      overSellLv1: -7,
+      overSellLv2: 8,
     },
     SO: {
       TP: 0.88,
@@ -248,14 +252,14 @@ export const coinlongtop: ICoinLong[] = [
       SO_StepScale: 2.3,
     },
     MA: {
-      ma_slow: 200,
-      ma_fast: 100,
-      ma_signal: 50,
-      ma_type: 2,
+      ma_type: 3,
+      ma_slow: 188,
+      ma_fast: 10,
+      ma_signal: 11,
     },
     rsiConfig: {
-      rsiLength: 10,
-      smaLength: 10,
+      rsiLength: 12,
+      smaLength: 13,
     },
     //232u ,232 trades,87% win,1.5 factor ,drawdown 206u
   },
