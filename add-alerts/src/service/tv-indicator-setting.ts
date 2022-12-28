@@ -252,11 +252,11 @@ export const configureStudyLongItem = async (
 ) => {
   try {
     const currentInterval = `${coinItem.timeFrame}`;
-    // await configureInterval(currentInterval.trim(), page);
-    // await waitForTimeout(3, "after changing the interval");
-    // await waitForTimeout(2, "let things settle from processing last alert");
-    // await navigateToSymbol(page, coinItem.symbol);
-    // await checkForInvalidSymbol(page, coinItem.symbol);
+    await configureInterval(currentInterval.trim(), page);
+    await waitForTimeout(3, "after changing the interval");
+    await waitForTimeout(2, "let things settle from processing last alert");
+    await navigateToSymbol(page, coinItem.symbol);
+    await checkForInvalidSymbol(page, coinItem.symbol);
     await waitForTimeout(2, "after navigating to ticker");
 
     const detailCoinItem: IConfigCoinDetail = getCoinDetailConfigValue(
@@ -267,12 +267,12 @@ export const configureStudyLongItem = async (
     await openConfigStudyPanel(page, detailCoinItem);
 
     //3 fill all setting and selector for each item
-    // await fillSettingValueStudy(
-    //   page,
-    //   detailCoinItem,
-    //   coinTemplate,
-    //   listKeyTemplate
-    // );
+    await fillSettingValueStudy(
+      page,
+      detailCoinItem,
+      coinTemplate,
+      listKeyTemplate
+    );
     //4 click btn ok to close panel
     await clickSubmitStudy(page);
   } catch (e) {
