@@ -18,6 +18,7 @@ import {
   checkForInvalidSymbol,
   clickInputAndPutValue,
   configureInterval,
+  fetchFirstXPath,
   isMatch,
   isXpathVisible,
   launchBrowser,
@@ -27,7 +28,157 @@ import {
   takeScreenshot,
 } from "./tv-page-actions";
 import kleur from "kleur";
-import { InvalidSymbolError, SelectionError, IndicatorError } from "../classes";
+import { SelectionError, IndicatorError } from "../classes";
+
+export const clickSubmitStudy = async (page) => {
+  log.trace("clickSubmit()");
+  const submitButton = await fetchFirstXPath(
+    page,
+    `//div[@data-name='indicator-properties-dialog']//button[@data-name='submit-button']`
+  );
+  submitButton.evaluate((b) => b.click());
+};
+
+export const openConfigStudyPanel = async (
+  page,
+  detailCoinItem: IConfigCoinDetail
+) => {
+  log.trace(
+    `searching study for ${kleur.yellow(detailCoinItem.indicatorName)}`
+  );
+  const selectorIndicator =
+    "//div[@data-name='legend-source-item']//div[@data-name='legend-settings-action']";
+
+  await page.waitForXPath(selectorIndicator, { timeout: 8000 });
+  const elements = await page.$x(selectorIndicator);
+
+  if (elements.length == 0) {
+    await takeScreenshot(page, "zero_indicators");
+  }
+  let found = false;
+  let foundOptions = [];
+  const conditionToMatch = detailCoinItem.indicatorName;
+  for (const el of elements) {
+    let optionText = await page.evaluate((element) => {
+      const parent = element.closest("div[data-name='legend-source-item']");
+      parent.classList.add("selected-G1_Pfvwd");
+      const textElem = parent.querySelector(
+        `div[data-name="legend-source-title"]`
+      );
+      if (textElem) {
+        return textElem.innerText;
+      }
+      return "";
+    }, el);
+    optionText = optionText.replace(/[\u200B]/g, "");
+    foundOptions.push(optionText);
+    if (isMatch(conditionToMatch, optionText)) {
+      log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
+      found = true;
+      await waitForTimeout(0.5, "before click legend-settings-action");
+      el.click();
+      await waitForTimeout(0.5, "after click legend-settings-action");
+      // return;
+    }
+  }
+  if (!found) throw new SelectionError(conditionToMatch, foundOptions);
+};
+
+const getCoinDetailConfigValue = (
+  coinItem: ICoinLong,
+  coinTemplate: IStudyTemplate
+): IConfigCoinDetail => {
+  ///prepare data
+  let dataValueDetail: { [x: string]: any } = {
+    ...coinItem.strategyLong,
+    ...coinItem.waveTrend,
+    ...coinItem.rsiConfig,
+    ...coinItem.MA,
+  };
+  ///fill checkbox value
+  if (dataValueDetail.minMa100Percents > 0) {
+    dataValueDetail = { ...dataValueDetail, useMa100Filter: true };
+  }
+  if (dataValueDetail.minMa50Percents > 0) {
+    dataValueDetail = { ...dataValueDetail, useMa50Filter: true };
+  }
+  if (dataValueDetail.BolMinPercents > 0) {
+    dataValueDetail = { ...dataValueDetail, useBolFilter: true };
+  }
+  if (dataValueDetail.rsiSMAignore > 0) {
+    dataValueDetail = { ...dataValueDetail, useRSI_SMA_entry: true };
+  }
+  const detailCoinItem: IConfigCoinDetail = {
+    indicatorName: coinTemplate.indicatorName,
+    symbol: coinItem.symbol,
+    timeFrame: coinItem.timeFrame,
+    config: dataValueDetail,
+  };
+  return detailCoinItem;
+};
+
+export const fillSettingValueStudy = async (
+  page,
+  detailCoinItem: IConfigCoinDetail,
+  coinTemplate: IStudyTemplate,
+  listKeyTemplate: string[]
+) => {
+  log.trace("..make sure we're showing the indicator dialog");
+  const isNotShowingAlertDialog = async () => {
+    return !(await isXpathVisible(
+      page,
+      "//div[@data-name='indicator-properties-dialog']"
+      // "//div[contains(@class, 'tv-alert-dialog')]"
+    ));
+  };
+  if (await isNotShowingAlertDialog()) {
+    log.warn("NOT showing indicator dialog?");
+    log.error(" throwing error");
+    throw new IndicatorError();
+  }
+
+  ///select all <input>
+  log.trace(
+    `searching dialog study for ${kleur.yellow(detailCoinItem.indicatorName)}`
+  );
+  const selectorAllInput =
+    "//div[@data-name='indicator-properties-dialog']//input";
+
+  await page.waitForXPath(selectorAllInput, { timeout: 8000 });
+  const allInput = await page.$x(selectorAllInput);
+
+  if (allInput.length == 0) {
+    await takeScreenshot(page, "zero_indicators");
+  } else {
+    const dataValueDetail = detailCoinItem.config;
+    for (let i = 0; i < listKeyTemplate.length; i++) {
+      const k = listKeyTemplate[i];
+      const infoInput: IConfigItemSelector = coinTemplate.configSelectors[k];
+      let value = get(dataValueDetail, k);
+      const indexOfinput = infoInput.index;
+      if (infoInput.type === "checkbox") {
+        value = value || false;
+        const isChecked = await page.evaluate(
+          (element) => element.checked,
+          allInput[indexOfinput]
+        );
+        if (isChecked != value) {
+          log.trace(`setting ${kleur.blue(k)} as checked | ${indexOfinput}`);
+          allInput[indexOfinput].click();
+          await waitForTimeout(0.3);
+        }
+      } else {
+        if (value) {
+          log.trace(
+            `Typing value: ${kleur.blue(k)} = ${value} | ${indexOfinput}`
+          );
+          await clickInputAndPutValue(page, allInput[indexOfinput], value);
+          await waitForTimeout(0.3);
+        }
+      }
+    }
+  }
+};
 
 export const loginFlow = async (): Promise<{
   browser: Browser;
@@ -108,128 +259,22 @@ export const configureStudyLongItem = async (
     // await checkForInvalidSymbol(page, coinItem.symbol);
     await waitForTimeout(2, "after navigating to ticker");
 
-    const detailCoinItem: IConfigCoinDetail = {
-      indicatorName: coinTemplate.indicatorName,
-      symbol: coinItem.symbol,
-      timeFrame: coinItem.timeFrame,
-      config: {},
-    };
-    //2 open config long study pannel
-    log.trace(
-      `searching study for ${kleur.yellow(detailCoinItem.indicatorName)}`
+    const detailCoinItem: IConfigCoinDetail = getCoinDetailConfigValue(
+      coinItem,
+      coinTemplate
     );
-    const selectorIndicator =
-      "//div[@data-name='legend-source-item']//div[@data-name='legend-settings-action']";
-
-    await page.waitForXPath(selectorIndicator, { timeout: 8000 });
-    const elements = await page.$x(selectorIndicator);
-
-    if (elements.length == 0) {
-      await takeScreenshot(page, "zero_indicators");
-    }
-    let found = false;
-    let foundOptions = [];
-    const conditionToMatch = detailCoinItem.indicatorName;
-    for (const el of elements) {
-      let optionText = await page.evaluate((element) => {
-        const parent = element.closest("div[data-name='legend-source-item']");
-        parent.classList.add("selected-G1_Pfvwd");
-        const textElem = parent.querySelector(
-          `div[data-name="legend-source-title"]`
-        );
-        if (textElem) {
-          return textElem.innerText;
-        }
-        return "";
-      }, el);
-      optionText = optionText.replace(/[\u200B]/g, "");
-      foundOptions.push(optionText);
-      if (isMatch(conditionToMatch, optionText)) {
-        log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
-        found = true;
-        await waitForTimeout(0.5, "before click legend-settings-action");
-        el.click();
-        await waitForTimeout(0.5, "after click legend-settings-action");
-        // return;
-      }
-    }
-    if (!found) throw new SelectionError(conditionToMatch, foundOptions);
+    //2 open config long study pannel
+    await openConfigStudyPanel(page, detailCoinItem);
 
     //3 fill all setting and selector for each item
-    log.trace("..make sure we're showing the indicator dialog");
-    const isNotShowingAlertDialog = async () => {
-      return !(await isXpathVisible(
-        page,
-        "//div[@data-name='indicator-properties-dialog']"
-        // "//div[contains(@class, 'tv-alert-dialog')]"
-      ));
-    };
-    if (await isNotShowingAlertDialog()) {
-      log.warn("NOT showing indicator dialog?");
-      log.error(" throwing error");
-      throw new IndicatorError();
-    }
-    ///prepare data
-    let dataValueDetail: { [x: string]: any } = {
-      ...coinItem.strategyLong,
-      ...coinItem.waveTrend,
-      ...coinItem.rsiConfig,
-      ...coinItem.MA,
-    };
-    ///fill checkbox value
-    if (dataValueDetail.minMa100Percents > 0) {
-      dataValueDetail = { ...dataValueDetail, useMa100Filter: true };
-    }
-    if (dataValueDetail.minMa50Percents > 0) {
-      dataValueDetail = { ...dataValueDetail, useMa50Filter: true };
-    }
-    if (dataValueDetail.BolMinPercents > 0) {
-      dataValueDetail = { ...dataValueDetail, useBolFilter: true };
-    }
-    if (dataValueDetail.rsiSMAignore > 0) {
-      dataValueDetail = { ...dataValueDetail, useRSI_SMA_entry: true };
-    }
-    ///select all <input>
-    log.trace(
-      `searching dialog study for ${kleur.yellow(detailCoinItem.indicatorName)}`
-    );
-    const selectorAllInput =
-      "//div[@data-name='indicator-properties-dialog']//input";
-
-    await page.waitForXPath(selectorAllInput, { timeout: 8000 });
-    const allInput = await page.$x(selectorAllInput);
-
-    if (allInput.length == 0) {
-      await takeScreenshot(page, "zero_indicators");
-    } else {
-      for (let i = 0; i < listKeyTemplate.length; i++) {
-        const k = listKeyTemplate[i];
-        const infoInput: IConfigItemSelector = coinTemplate.configSelectors[k];
-        let value = get(dataValueDetail, k);
-        const indexOfinput = infoInput.index;
-        if (infoInput.type === "checkbox") {
-          value = value || false;
-          const isChecked = await page.evaluate(
-            (element) => element.checked,
-            allInput[indexOfinput]
-          );
-          if (isChecked != value) {
-            log.trace(`setting ${kleur.blue(k)} as checked | ${indexOfinput}`);
-            allInput[indexOfinput].click();
-            await waitForTimeout(0.3);
-          }
-        } else {
-          if (value) {
-            log.trace(
-              `Typing value: ${kleur.blue(k)} = ${value} | ${indexOfinput}`
-            );
-            await clickInputAndPutValue(page, allInput[indexOfinput], value);
-            await waitForTimeout(0.3);
-          }
-        }
-      }
-    }
+    // await fillSettingValueStudy(
+    //   page,
+    //   detailCoinItem,
+    //   coinTemplate,
+    //   listKeyTemplate
+    // );
     //4 click btn ok to close panel
+    await clickSubmitStudy(page);
   } catch (e) {
     console.error("configureStudyLongItem Fail!", e.message);
     throw e;
