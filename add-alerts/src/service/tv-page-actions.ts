@@ -520,11 +520,11 @@ export const configureSingleAlertSettings = async (
       throw e;
     }
   }
-  await performActualEntry("tertiaryLeft");
-  await performActualEntry("tertiaryRight");
+  // await performActualEntry("tertiaryLeft");
+  // await performActualEntry("tertiaryRight");
 
-  await performActualEntry("quaternaryLeft");
-  await performActualEntry("quaternaryRight");
+  // await performActualEntry("quaternaryLeft");
+  // await performActualEntry("quaternaryRight");
 
   await waitForTimeout(0.4);
 

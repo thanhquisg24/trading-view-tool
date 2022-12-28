@@ -7,6 +7,7 @@ import {
 } from "./common-service";
 import { get } from "lodash";
 import {
+  ICoinAlertInfo,
   ICoinLong,
   IConfigCoinDetail,
   IConfigItemSelector,
@@ -15,6 +16,7 @@ import {
 } from "./indicator-config";
 import log, { logLogInfo } from "./log";
 import {
+  addAlert,
   checkForInvalidSymbol,
   clickInputAndPutValue,
   configureInterval,
@@ -29,6 +31,7 @@ import {
 } from "./tv-page-actions";
 import kleur from "kleur";
 import { SelectionError, IndicatorError } from "../classes";
+import { ISingleAlertSettings } from "../interfaces";
 
 export const clickSubmitStudy = async (page) => {
   log.trace("clickSubmit()");
@@ -281,6 +284,22 @@ export const configureStudyLongItem = async (
   }
 };
 
+export const addAlertForStudy = async (page, alertInfo: ICoinAlertInfo) => {
+  try {
+    const singleAlertSettings: ISingleAlertSettings = {
+      name: `${alertInfo.symbol} ${alertInfo.timeFrame} ${alertInfo.indicatorName} ${alertInfo.direction} *`,
+      condition: alertInfo.condition,
+      actions: alertInfo.actions,
+    };
+    await page.addStyleTag({ content: styleOverride });
+    await addAlert(page, singleAlertSettings);
+    log.info(`add ${kleur.green(singleAlertSettings.name)} success!`);
+  } catch (error) {
+    console.error("addAlertForStudy Fail!");
+    throw error;
+  }
+};
+
 export const configureStudyLongMain = async (coins: ICoinLong[]) => {
   try {
     const { browser, page } = await loginFlow();
@@ -296,6 +315,24 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
         coinTemplate,
         listKeyTemplate
       );
+      await waitForTimeout(0.5, "after config study completed");
+      const alertInfo: ICoinAlertInfo = {
+        indicatorName: coinTemplate.indicatorName,
+        symbol: coinItem.symbol,
+        timeFrame: coinItem.timeFrame,
+        direction: "LONG",
+        condition: {
+          primaryLeft: coinTemplate.indicatorName,
+          secondary: "Any alert() function call",
+        },
+        actions: {
+          webhook: {
+            enabled: true,
+            url: "https://3commas.io/trade_signal/trading_view",
+          },
+        },
+      };
+      await addAlertForStudy(page, alertInfo);
     }
   } catch (e) {
     console.error("configureStudyLongMain Fail!");

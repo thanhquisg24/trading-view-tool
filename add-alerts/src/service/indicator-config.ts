@@ -41,6 +41,22 @@ export interface ICoinLong {
   };
 }
 
+export interface ICoinAlertInfo {
+  indicatorName: string;
+  symbol: string;
+  timeFrame: number;
+  direction: "LONG" | "SHORT";
+  condition: {
+    primaryLeft: string;
+    secondary: string;
+  };
+  actions?: {
+    webhook: {
+      enabled: boolean;
+      url: string;
+    };
+  };
+}
 export interface IConfigCoinDetail {
   indicatorName: string;
   symbol: string;
