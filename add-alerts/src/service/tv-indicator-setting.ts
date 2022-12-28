@@ -114,6 +114,7 @@ const getCoinDetailConfigValue = (
   const detailCoinItem: IConfigCoinDetail = {
     indicatorName: coinTemplate.indicatorName,
     symbol: coinItem.symbol,
+    shortSymbol: coinItem.shortSymbol,
     timeFrame: coinItem.timeFrame,
     config: dataValueDetail,
   };
@@ -287,7 +288,7 @@ export const configureStudyLongItem = async (
 export const addAlertForStudy = async (page, alertInfo: ICoinAlertInfo) => {
   try {
     const singleAlertSettings: ISingleAlertSettings = {
-      name: `${alertInfo.symbol} ${alertInfo.timeFrame} ${alertInfo.indicatorName} ${alertInfo.direction} *`,
+      name: `${alertInfo.shortSymbol} ${alertInfo.timeFrame}m ${alertInfo.indicatorName} ${alertInfo.direction} *`,
       condition: alertInfo.condition,
       actions: alertInfo.actions,
     };
@@ -315,10 +316,11 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
         coinTemplate,
         listKeyTemplate
       );
-      await waitForTimeout(0.5, "after config study completed");
+      await waitForTimeout(0.1, "after config study completed");
       const alertInfo: ICoinAlertInfo = {
         indicatorName: coinTemplate.indicatorName,
         symbol: coinItem.symbol,
+        shortSymbol: coinItem.shortSymbol,
         timeFrame: coinItem.timeFrame,
         direction: "LONG",
         condition: {

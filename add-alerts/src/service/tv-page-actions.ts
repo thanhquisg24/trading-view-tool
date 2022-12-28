@@ -506,7 +506,7 @@ export const configureSingleAlertSettings = async (
 
   await performActualEntry("primaryLeft");
   try {
-    await performActualEntry("primaryRight");
+    // await performActualEntry("primaryRight");
     await performActualEntry("secondary");
   } catch (e) {
     if (e instanceof NoInputFoundError) {
@@ -515,7 +515,7 @@ export const configureSingleAlertSettings = async (
       );
       // sometimes the secondary must be set first before the primaryRight shows up
       await performActualEntry("secondary");
-      await performActualEntry("primaryRight");
+      // await performActualEntry("primaryRight");
     } else {
       throw e;
     }
@@ -649,7 +649,7 @@ export const configureSingleAlertSettings = async (
           log.trace(`typing webhook url: ${kleur.blue(actions.webhook.url)}`);
           const webhookUrlEl = await fetchFirstXPath(
             page,
-            `//input[contains(@class, 'input-oiYdY6I4 with-end-slot-oiYdY6I4')]`,
+            `//input[@id='webhook-url']`,
             1000
           );
           // await clickInputAndDelete(page, webhookUrlEl);

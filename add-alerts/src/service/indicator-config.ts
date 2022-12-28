@@ -2,6 +2,7 @@ export interface ICoinLong {
   [x: string]: any;
   timeFrame: number;
   symbol: string;
+  shortSymbol: string;
   // candlema_type?: CANDLE_ma_typeS;
   strategyLong: {
     useMa?: boolean;
@@ -44,6 +45,7 @@ export interface ICoinLong {
 export interface ICoinAlertInfo {
   indicatorName: string;
   symbol: string;
+  shortSymbol: string;
   timeFrame: number;
   direction: "LONG" | "SHORT";
   condition: {
@@ -60,6 +62,7 @@ export interface ICoinAlertInfo {
 export interface IConfigCoinDetail {
   indicatorName: string;
   symbol: string;
+  shortSymbol: string;
   timeFrame: number;
   config: {
     [key: string]: any;
@@ -241,6 +244,7 @@ export const coinlongtop: ICoinLong[] = [
   {
     timeFrame: 33,
     symbol: "BINANCE:AAVEUSDTPERP",
+    shortSymbol: "AAVE",
     strategyLong: {
       useUptrend: true,
       useBol: true,
