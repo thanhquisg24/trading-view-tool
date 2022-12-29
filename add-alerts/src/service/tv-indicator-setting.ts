@@ -7,6 +7,8 @@ import {
 } from "./common-service";
 import { get } from "lodash";
 import {
+  IBaseCoin,
+  IBaseConfigYML,
   ICoinAlertInfo,
   ICoinLong,
   IConfigCoinDetail,
@@ -248,6 +250,25 @@ export const loginFlow = async (): Promise<{
   }
 };
 
+export const switchCoinAndTimeFrame = async (
+  page,
+  timeFrame: number,
+  symbol: string
+) => {
+  try {
+    const currentInterval = `${timeFrame}`;
+    await configureInterval(currentInterval.trim(), page);
+    await waitForTimeout(3, "after changing the interval");
+    await waitForTimeout(2, "let things settle from processing last alert");
+    await navigateToSymbol(page, symbol);
+    await checkForInvalidSymbol(page, symbol);
+    await waitForTimeout(2, "after navigating to ticker");
+  } catch (e) {
+    console.error("switchCoinAndTimeFrame Fail!", e.message);
+    throw e;
+  }
+};
+
 export const configureStudyLongItem = async (
   page,
   coinItem: ICoinLong,
@@ -255,14 +276,6 @@ export const configureStudyLongItem = async (
   listKeyTemplate: string[]
 ) => {
   try {
-    const currentInterval = `${coinItem.timeFrame}`;
-    await configureInterval(currentInterval.trim(), page);
-    await waitForTimeout(3, "after changing the interval");
-    await waitForTimeout(2, "let things settle from processing last alert");
-    await navigateToSymbol(page, coinItem.symbol);
-    await checkForInvalidSymbol(page, coinItem.symbol);
-    await waitForTimeout(2, "after navigating to ticker");
-
     const detailCoinItem: IConfigCoinDetail = getCoinDetailConfigValue(
       coinItem,
       coinTemplate
@@ -310,6 +323,7 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
     //set config all coins
     for (let index = 0; index < coinExamples.length; index++) {
       const coinItem = coinExamples[index];
+      await switchCoinAndTimeFrame(page, coinItem.timeFrame, coinItem.symbol);
       await configureStudyLongItem(
         page,
         coinItem,
@@ -338,6 +352,47 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
     }
   } catch (e) {
     console.error("configureStudyLongMain Fail!");
+    throw e;
+  }
+};
+
+export const addAlertWithoutConfigStudy = async (
+  coins: IBaseCoin[],
+  baseConfigYML: IBaseConfigYML
+) => {
+  try {
+    const { page } = await loginFlow();
+    //set config all coins
+    for (let index = 0; index < coins.length; index++) {
+      const coinItem = coins[index];
+      await switchCoinAndTimeFrame(
+        page,
+        baseConfigYML.tradingview.interval,
+        coinItem.symbol
+      );
+      await waitForTimeout(0.1, "after switch coin completed");
+      const alertInfo: ICoinAlertInfo = {
+        indicatorName: baseConfigYML.alert.condition.primaryLeft,
+        symbol: coinItem.symbol,
+        shortSymbol: coinItem.shortSymbol,
+        timeFrame: baseConfigYML.tradingview.interval,
+        direction: "",
+        condition: {
+          primaryLeft: baseConfigYML.alert.condition.primaryLeft,
+          secondary: baseConfigYML.alert.condition.secondary,
+        },
+        actions: {
+          webhook: {
+            enabled: baseConfigYML.alert.actions.webhook.enabled,
+            url: baseConfigYML.alert.actions.webhook.url,
+          },
+        },
+      };
+      await addAlertForStudy(page, alertInfo);
+    }
+    log.info(`add all Alerts success!`);
+  } catch (e) {
+    console.error("addAlertWithoutConfigStudy Fail!");
     throw e;
   }
 };

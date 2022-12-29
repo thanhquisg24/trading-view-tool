@@ -1,8 +1,12 @@
-export interface ICoinLong {
-  [x: string]: any;
-  timeFrame: number;
+import { ISingleAlertSettings } from "../interfaces";
+
+export interface IBaseCoin {
   symbol: string;
   shortSymbol: string;
+}
+export interface ICoinLong extends IBaseCoin {
+  [x: string]: any;
+  timeFrame: number;
   // candlema_type?: CANDLE_ma_typeS;
   strategyLong: {
     useMa?: boolean;
@@ -42,12 +46,19 @@ export interface ICoinLong {
   };
 }
 
-export interface ICoinAlertInfo {
+export interface IBaseConfigYML {
+  tradingview: {
+    chartUrl: string;
+    interval: number;
+    username: string;
+    password: string;
+  };
+  alert: ISingleAlertSettings;
+}
+export interface ICoinAlertInfo extends IBaseCoin {
   indicatorName: string;
-  symbol: string;
-  shortSymbol: string;
   timeFrame: number;
-  direction: "LONG" | "SHORT";
+  direction: "LONG" | "SHORT" | "";
   condition: {
     primaryLeft: string;
     secondary: string;
@@ -59,10 +70,9 @@ export interface ICoinAlertInfo {
     };
   };
 }
-export interface IConfigCoinDetail {
+export interface IConfigCoinDetail extends IBaseCoin {
   indicatorName: string;
-  symbol: string;
-  shortSymbol: string;
+
   timeFrame: number;
   config: {
     [key: string]: any;

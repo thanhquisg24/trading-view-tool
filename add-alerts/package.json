@@ -28,7 +28,8 @@
     "test:fetchcoin": "jest --findRelatedTests src/fetch-symbols.test.ts",
     "test:tvaction": "jest --findRelatedTests src/test/tv-page-actions.test.ts",
     "test:tvaddalert": "jest --findRelatedTests src/test/add-alerts-2.test.ts",
-    "test:tvstudy": "jest --findRelatedTests src/test/tv-indicator.test.ts"
+    "test:tvstudy": "jest --findRelatedTests src/test/tv-indicator.test.ts",
+    "test:tvstudyNotConfig": "jest --findRelatedTests src/test/add-alert-without-config-study.test.ts"
   },
   "keywords": [
     "tradingview",

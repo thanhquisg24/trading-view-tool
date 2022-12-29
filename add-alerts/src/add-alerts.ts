@@ -29,7 +29,7 @@ import { logBaseDelay, styleOverride } from "./service/common-service";
 import { InvalidSymbolError } from "./classes";
 import { Browser, Page } from "puppeteer";
 
-const readFilePromise = (filename: string) => {
+export const readFilePromise = (filename: string) => {
   return new Promise<any[]>((resolve, reject) => {
     const rows = [];
 
