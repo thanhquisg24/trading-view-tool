@@ -11,10 +11,12 @@ import {
   IBaseConfigYML,
   ICoinAlertInfo,
   ICoinLong,
+  ICoinShort,
   IConfigCoinDetail,
-  IConfigItemSelector,
-  IStudyTemplate,
+  IConfigLongItemSelector,
+  ILongStudyTemplate,
   LongStudyTemplate,
+  ShortStudyTemplate,
 } from "./indicator-config";
 import log, { logLogInfo } from "./log";
 import {
@@ -89,9 +91,9 @@ export const openConfigStudyPanel = async (
   if (!found) throw new SelectionError(conditionToMatch, foundOptions);
 };
 
-const getCoinDetailConfigValue = (
+const getLongCoinDetailConfigValue = (
   coinItem: ICoinLong,
-  coinTemplate: IStudyTemplate
+  coinTemplate: ILongStudyTemplate
 ): IConfigCoinDetail => {
   ///prepare data
   let dataValueDetail: { [x: string]: any } = {
@@ -126,7 +128,7 @@ const getCoinDetailConfigValue = (
 export const fillSettingValueStudy = async (
   page,
   detailCoinItem: IConfigCoinDetail,
-  coinTemplate: IStudyTemplate,
+  coinTemplate: ILongStudyTemplate,
   listKeyTemplate: string[]
 ) => {
   log.trace("..make sure we're showing the indicator dialog");
@@ -159,7 +161,8 @@ export const fillSettingValueStudy = async (
     const dataValueDetail = detailCoinItem.config;
     for (let i = 0; i < listKeyTemplate.length; i++) {
       const k = listKeyTemplate[i];
-      const infoInput: IConfigItemSelector = coinTemplate.configSelectors[k];
+      const infoInput: IConfigLongItemSelector =
+        coinTemplate.configSelectors[k];
       let value = get(dataValueDetail, k);
       const indexOfinput = infoInput.index;
       if (infoInput.type === "checkbox") {
@@ -272,11 +275,39 @@ export const switchCoinAndTimeFrame = async (
 export const configureStudyLongItem = async (
   page,
   coinItem: ICoinLong,
-  coinTemplate: IStudyTemplate,
+  coinTemplate: ILongStudyTemplate,
   listKeyTemplate: string[]
 ) => {
   try {
-    const detailCoinItem: IConfigCoinDetail = getCoinDetailConfigValue(
+    const detailCoinItem: IConfigCoinDetail = getLongCoinDetailConfigValue(
+      coinItem,
+      coinTemplate
+    );
+    //2 open config long study pannel
+    await openConfigStudyPanel(page, detailCoinItem);
+
+    //3 fill all setting and selector for each item
+    await fillSettingValueStudy(
+      page,
+      detailCoinItem,
+      coinTemplate,
+      listKeyTemplate
+    );
+    //4 click btn ok to close panel
+    await clickSubmitStudy(page);
+  } catch (e) {
+    console.error("configureStudyLongItem Fail!", e.message);
+    throw e;
+  }
+};
+export const configureStudyShortItem = async (
+  page,
+  coinItem: ICoinShort,
+  coinTemplate: IShortStudyTemplate,
+  listKeyTemplate: string[]
+) => {
+  try {
+    const detailCoinItem: IConfigCoinDetail = getLongCoinDetailConfigValue(
       coinItem,
       coinTemplate
     );
@@ -337,6 +368,48 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
         shortSymbol: coinItem.shortSymbol,
         timeFrame: coinItem.timeFrame,
         direction: "LONG",
+        condition: {
+          primaryLeft: coinTemplate.indicatorName,
+          secondary: "Any alert() function call",
+        },
+        actions: {
+          webhook: {
+            enabled: true,
+            url: "https://3commas.io/trade_signal/trading_view",
+          },
+        },
+      };
+      await addAlertForStudy(page, alertInfo);
+    }
+  } catch (e) {
+    console.error("configureStudyLongMain Fail!");
+    throw e;
+  }
+};
+
+export const configureStudyShortMain = async (coins: ICoinShort[]) => {
+  try {
+    const { browser, page } = await loginFlow();
+    const coinExamples: ICoinShort[] = coins;
+    const coinTemplate = ShortStudyTemplate;
+    const listKeyTemplate = Object.keys(ShortStudyTemplate.configSelectors);
+    //set config all coins
+    for (let index = 0; index < coinExamples.length; index++) {
+      const coinItem = coinExamples[index];
+      await switchCoinAndTimeFrame(page, coinItem.timeFrame, coinItem.symbol);
+      await configureStudyShortItem(
+        page,
+        coinItem,
+        coinTemplate,
+        listKeyTemplate
+      );
+      await waitForTimeout(0.1, "after config study completed");
+      const alertInfo: ICoinAlertInfo = {
+        indicatorName: coinTemplate.indicatorName,
+        symbol: coinItem.symbol,
+        shortSymbol: coinItem.shortSymbol,
+        timeFrame: coinItem.timeFrame,
+        direction: "SHORT",
         condition: {
           primaryLeft: coinTemplate.indicatorName,
           secondary: "Any alert() function call",
