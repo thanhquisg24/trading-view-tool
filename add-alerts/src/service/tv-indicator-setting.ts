@@ -400,13 +400,13 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
     //set config all coins
     for (let index = 0; index < coinExamples.length; index++) {
       const coinItem = coinExamples[index];
-      // await switchCoinAndTimeFrame(page, coinItem.timeFrame, coinItem.symbol);
-      // await configureStudyLongItem(
-      //   page,
-      //   coinItem,
-      //   coinTemplate,
-      //   listKeyTemplate
-      // );
+      await switchCoinAndTimeFrame(page, coinItem.timeFrame, coinItem.symbol);
+      await configureStudyLongItem(
+        page,
+        coinItem,
+        coinTemplate,
+        listKeyTemplate
+      );
       await waitForTimeout(0.1, "after config study completed");
       const alertInfo: ICoinAlertInfo = {
         indicatorName: coinTemplate.indicatorName,
