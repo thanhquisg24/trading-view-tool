@@ -651,14 +651,12 @@ export const configureSingleAlertSettings = async (
             `//input[@id='webhook-url']`,
             1000
           );
-          const isWebhookNotEqual: boolean = await page.evaluate(
-            (element, url) => {
-              const text = element.innerText;
-              return text !== url;
-            },
-            webhookUrlEl,
-            actions.webhook.url
-          );
+          const textOfWebhook: string = await page.evaluate((element) => {
+            const text = element.value;
+            return text;
+          }, webhookUrlEl);
+          const isWebhookNotEqual: boolean =
+            textOfWebhook !== actions.webhook.url;
           if (isWebhookNotEqual) {
             await clickInputAndPutValue(
               page,
