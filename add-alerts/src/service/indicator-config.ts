@@ -513,7 +513,7 @@ export const ShortStudyTemplate: IShortStudyTemplate = {
 
 export const coinlongtop: ICoinLong[] = [
   {
-    timeFrame: 33,
+    timeFrame: 30,
     symbol: "BINANCE:AAVEUSDTPERP",
     shortSymbol: "AAVE",
     strategyLong: {
@@ -552,7 +552,47 @@ export const coinlongtop: ICoinLong[] = [
       rsiLength: 12,
       smaLength: 13,
     },
-    //232u ,232 trades,87% win,1.5 factor ,drawdown 206u
+  },
+  {
+    timeFrame: 60,
+    symbol: "BINANCE:ETHUSDTPERP",
+    shortSymbol: "ETH",
+    strategyLong: {
+      useUptrend: true,
+      useBol: true,
+      useRsiCross: true,
+      useWt: true,
+      useMa: true,
+      minMa100Percents: 0.1,
+      minMa50Percents: 0.2,
+      BolMinPercents: 0.5,
+      PinbarPercents: 0.001,
+      rsiOverSell: 30,
+      rsiOverBuy: 70,
+      rsiSMAignore: 30,
+      rsiUnderSMA: true,
+    },
+    waveTrend: {
+      overSellLv1: -60,
+      overSellLv2: -53,
+    },
+    SO: {
+      TP: 0.88,
+      maxSO: 3,
+      SO_PercentDrawdown: 6,
+      SO_VolScale: 2,
+      SO_StepScale: 2.3,
+    },
+    MA: {
+      ma_type: 2,
+      ma_slow: 200,
+      ma_fast: 100,
+      ma_signal: 50,
+    },
+    rsiConfig: {
+      rsiLength: 7,
+      smaLength: 14,
+    },
   },
 ];
 export const coinshorttop: ICoinShort[] = [

@@ -363,8 +363,7 @@ export const configureSingleAlertSettings = async (
     }
 
     log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`);
-    const selector =
-      "//div[@data-name='menu-inner']//span[@class='selectItem-mqgcjOOh']";
+    const selector = "//div[@data-name='menu-inner']//div[@role='option']";
 
     await page.waitForXPath(selector, { timeout: 8000 });
     const elements = await page.$x(selector);
@@ -417,7 +416,7 @@ export const configureSingleAlertSettings = async (
         const targetElement = await fetchFirstXPath(
           page,
           dropdownXpathQueries[key],
-          3000
+          2000
         );
         // must be a dropdown...
         log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`);
@@ -620,7 +619,7 @@ export const configureSingleAlertSettings = async (
   // alert actions
   const elNotify = await fetchFirstXPath(
     page,
-    "//button[@data-name='notifications']"
+    "//button[@id='alert-dialog-tabs__notifications']"
   );
   elNotify.click();
   // await page.waitForSelector("//button[@data-name='notifications']");

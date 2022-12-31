@@ -15,6 +15,7 @@ import {
   IConfigCoinDetail,
   IConfigLongItemSelector,
   ILongStudyTemplate,
+  IShortStudyTemplate,
   LongStudyTemplate,
   ShortStudyTemplate,
 } from "./indicator-config";
@@ -124,11 +125,56 @@ const getLongCoinDetailConfigValue = (
   };
   return detailCoinItem;
 };
+const getShortCoinDetailConfigValue = (
+  coinItem: ICoinShort,
+  coinTemplate: IShortStudyTemplate
+): IConfigCoinDetail => {
+  ///prepare data
+  let dataValueDetail: { [x: string]: any } = {
+    ...coinItem.strategyLong,
+    ...coinItem.waveTrend,
+    ...coinItem.rsiConfig,
+    ...coinItem.MA,
+  };
+  ///fill checkbox value
+  if (dataValueDetail.minMa100Percents > 0) {
+    dataValueDetail = { ...dataValueDetail, useMa100Filter: true };
+  }
+  if (dataValueDetail.minMa50Percents > 0) {
+    dataValueDetail = { ...dataValueDetail, useMa50Filter: true };
+  }
+  if (dataValueDetail.BolMinPercents > 0) {
+    dataValueDetail = { ...dataValueDetail, useBolFilter: true };
+  }
+  if (dataValueDetail.rsiSMAignore > 0) {
+    dataValueDetail = { ...dataValueDetail, useRSI_SMA_entry: true };
+  }
+  if (dataValueDetail.rsiOverBuy_1 > 0) {
+    dataValueDetail = { ...dataValueDetail, useRsiOverBuy_1: true };
+  }
+  if (dataValueDetail.rsiOverBuy_2 > 0) {
+    dataValueDetail = { ...dataValueDetail, useRsiOverBuy_2: true };
+  }
+  if (dataValueDetail.rsiOverBuy_3 > 0) {
+    dataValueDetail = { ...dataValueDetail, useRsiOverBuy_3: true };
+  }
+  if (dataValueDetail.rsiOverBuy_4 > 0) {
+    dataValueDetail = { ...dataValueDetail, useRsiOverBuy_4: true };
+  }
+  const detailCoinItem: IConfigCoinDetail = {
+    indicatorName: coinTemplate.indicatorName,
+    symbol: coinItem.symbol,
+    shortSymbol: coinItem.shortSymbol,
+    timeFrame: coinItem.timeFrame,
+    config: dataValueDetail,
+  };
+  return detailCoinItem;
+};
 
 export const fillSettingValueStudy = async (
   page,
   detailCoinItem: IConfigCoinDetail,
-  coinTemplate: ILongStudyTemplate,
+  coinTemplate: ILongStudyTemplate | IShortStudyTemplate,
   listKeyTemplate: string[]
 ) => {
   log.trace("..make sure we're showing the indicator dialog");
@@ -261,7 +307,7 @@ export const switchCoinAndTimeFrame = async (
   try {
     const currentInterval = `${timeFrame}`;
     await configureInterval(currentInterval.trim(), page);
-    await waitForTimeout(3, "after changing the interval");
+    await waitForTimeout(2, "after changing the interval");
     await waitForTimeout(2, "let things settle from processing last alert");
     await navigateToSymbol(page, symbol);
     await checkForInvalidSymbol(page, symbol);
@@ -307,7 +353,7 @@ export const configureStudyShortItem = async (
   listKeyTemplate: string[]
 ) => {
   try {
-    const detailCoinItem: IConfigCoinDetail = getLongCoinDetailConfigValue(
+    const detailCoinItem: IConfigCoinDetail = getShortCoinDetailConfigValue(
       coinItem,
       coinTemplate
     );
@@ -354,13 +400,13 @@ export const configureStudyLongMain = async (coins: ICoinLong[]) => {
     //set config all coins
     for (let index = 0; index < coinExamples.length; index++) {
       const coinItem = coinExamples[index];
-      await switchCoinAndTimeFrame(page, coinItem.timeFrame, coinItem.symbol);
-      await configureStudyLongItem(
-        page,
-        coinItem,
-        coinTemplate,
-        listKeyTemplate
-      );
+      // await switchCoinAndTimeFrame(page, coinItem.timeFrame, coinItem.symbol);
+      // await configureStudyLongItem(
+      //   page,
+      //   coinItem,
+      //   coinTemplate,
+      //   listKeyTemplate
+      // );
       await waitForTimeout(0.1, "after config study completed");
       const alertInfo: ICoinAlertInfo = {
         indicatorName: coinTemplate.indicatorName,
